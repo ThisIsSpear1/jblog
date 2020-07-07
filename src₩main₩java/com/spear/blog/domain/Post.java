@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
@@ -26,11 +27,14 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long id;
 	
+	@NonNull
 	@NotBlank(message = "Title is empty")
-	private final String title;
+	private String title;
 	
+	@NonNull
 	@NotBlank(message = "Content is empty")
-	private final  String content;
+	private   String content;
+	
 	private final LocalDateTime regDate;
 
 }

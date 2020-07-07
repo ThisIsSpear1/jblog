@@ -33,7 +33,7 @@ public class LoadDatabase {
 		   }
 	
 		   int Post_no = 1;
-		   while(Post_no < 10) {
+		   while(Post_no < 20) {
 			   log.info("Post Preloading"+postRepository.save(new Post("thisistitle"+Post_no,"thisiscontent"+Post_no++, LocalDateTime.now()))); 
 		   }		   
 	   };
