@@ -1,8 +1,10 @@
 package com.spear.blog.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +39,10 @@ public class BlogController {
 	}
 	
 	@GetMapping("/blog/{id}")
-	Blog one(@PathVariable Long id) {
-		return blogRepository.findById(id).orElseThrow(() -> new BlogNotFoundException(id));
+	EntityModel<Blog> one(@PathVariable Long id) {
+		Blog blog = blogRepository.findById(id).orElseThrow(() -> new BlogNotFoundException(id));
+		return new EntityModel<>(blog, linkTo(methodOn(BlogController.class).one(id)).withSelfRel(),
+				linkTo(methodOn(BlogController.class).all()).withRel("blog"));
 	}
 	
 	@PutMapping("/blog/{id}")
