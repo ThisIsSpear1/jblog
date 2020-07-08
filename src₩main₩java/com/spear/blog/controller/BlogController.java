@@ -1,9 +1,12 @@
 package com.spear.blog.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spear.blog.BlogNotFoundException;
+import com.spear.blog.BlogEntityModelAssembler;
 import com.spear.blog.domain.Blog;
 import com.spear.blog.repository.BlogRepository;
 
@@ -24,13 +27,21 @@ public class BlogController {
 	@Autowired
 	BlogRepository blogRepository;
 	
-	BlogController(BlogRepository blogRepository){
+	@Autowired
+	BlogEntityModelAssembler blogEntityModelAssembler;
+	
+	BlogController(BlogRepository blogRepository,
+			BlogEntityModelAssembler blogEntityModelAssembler){
 		this.blogRepository = blogRepository;
+		this.blogEntityModelAssembler = blogEntityModelAssembler;
 	}
 	
 	@GetMapping("/blog")
-	public List<Blog> all(){
-		return blogRepository.findAll();
+	public CollectionModel<EntityModel<Blog>> all(){
+		List<EntityModel<Blog>> blogs = blogRepository.findAll().stream()
+				.map(blogEntityModelAssembler::toModel)
+				.collect(Collectors.toList());
+		return new CollectionModel<>(blogs, linkTo(methodOn(BlogController.class).all()).withSelfRel());
 	}
 	
 	@PostMapping("/blog")
@@ -39,10 +50,9 @@ public class BlogController {
 	}
 	
 	@GetMapping("/blog/{id}")
-	EntityModel<Blog> one(@PathVariable Long id) {
+	public EntityModel<Blog> one(@PathVariable Long id) {
 		Blog blog = blogRepository.findById(id).orElseThrow(() -> new BlogNotFoundException(id));
-		return new EntityModel<>(blog, linkTo(methodOn(BlogController.class).one(id)).withSelfRel(),
-				linkTo(methodOn(BlogController.class).all()).withRel("blog"));
+		return blogEntityModelAssembler.toModel(blog);
 	}
 	
 	@PutMapping("/blog/{id}")
