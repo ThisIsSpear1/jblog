@@ -6,9 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +22,7 @@ public class Blog {
 	  
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private Long blogId;
 	
 	@NonNull
 	@NotBlank(message = "blog title is blank")
@@ -33,5 +30,7 @@ public class Blog {
 	
 	@NonNull
 	private String logoFile;
+	
+	
 
 }

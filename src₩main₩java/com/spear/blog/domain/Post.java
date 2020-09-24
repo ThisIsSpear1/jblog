@@ -1,13 +1,14 @@
 package com.spear.blog.domain;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class Post {
 	  
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long id;
+	private Long postId;
 	
 	@NonNull
 	@NotBlank(message = "Title is empty")
@@ -35,6 +36,14 @@ public class Post {
 	@NotBlank(message = "Content is empty")
 	private   String content;
 	
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private final LocalDateTime regDate;
 
+	@NonNull
+	private Long userId;
+	
+	@NonNull
+	private Long blogId;
+	
 }

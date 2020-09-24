@@ -1,10 +1,5 @@
 package com.spear.blog.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -16,60 +11,38 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spear.blog.BlogNotFoundException;
-import com.spear.blog.BlogEntityModelAssembler;
 import com.spear.blog.domain.Blog;
-import com.spear.blog.repository.BlogRepository;
+import com.spear.blog.service.BlogService;
 
 @RestController
 public class BlogController {
 
 	@Autowired
-	BlogRepository blogRepository;
-	
-	@Autowired
-	BlogEntityModelAssembler blogEntityModelAssembler;
-	
-	BlogController(BlogRepository blogRepository,
-			BlogEntityModelAssembler blogEntityModelAssembler){
-		this.blogRepository = blogRepository;
-		this.blogEntityModelAssembler = blogEntityModelAssembler;
-	}
+	BlogService blogService;
 	
 	@GetMapping("/blog")
 	public CollectionModel<EntityModel<Blog>> all(){
-		List<EntityModel<Blog>> blogs = blogRepository.findAll().stream()
-				.map(blogEntityModelAssembler::toModel)
-				.collect(Collectors.toList());
-		return new CollectionModel<>(blogs, linkTo(methodOn(BlogController.class).all()).withSelfRel());
+		
+		return blogService.all();
 	}
 	
 	@PostMapping("/blog")
 	Blog newBlog(@RequestBody Blog newBlog) {
-		return blogRepository.save(newBlog);
+		return blogService.newBlog(newBlog);
 	}
 	
 	@GetMapping("/blog/{id}")
 	public EntityModel<Blog> one(@PathVariable Long id) {
-		Blog blog = blogRepository.findById(id).orElseThrow(() -> new BlogNotFoundException(id));
-		return blogEntityModelAssembler.toModel(blog);
+		return blogService.one(id);
 	}
 	
 	@PutMapping("/blog/{id}")
 	Blog replaceBlog(@RequestBody Blog newBlog, @PathVariable Long id) {
-		return blogRepository.findById(id).map(blog -> 
-			{
-				blog.setTitle(newBlog.getTitle());
-				blog.setLogoFile(newBlog.getLogoFile());
-				return blogRepository.save(blog);
-			}).orElseGet(() -> {
-				newBlog.setId(id);
-				return blogRepository.save(newBlog);
-			});
+		return blogService.replaceBlog(newBlog, id);
 	}
 	
 	@DeleteMapping("/blog/{id}")
 	void deleteBlog(@PathVariable Long id) {
-		blogRepository.deleteById(id);
+		blogService.deleteBlog(id);
 	}
 }

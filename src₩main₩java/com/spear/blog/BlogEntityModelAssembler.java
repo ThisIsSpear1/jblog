@@ -15,7 +15,7 @@ public class BlogEntityModelAssembler implements RepresentationModelAssembler<Bl
 	public EntityModel<Blog> toModel(Blog blog) {
 		// TODO Auto-generated method stub
 		return new EntityModel<>(blog, 
-				linkTo(methodOn(BlogController.class).one(blog.getId())).withSelfRel(),
+				linkTo(methodOn(BlogController.class).one(blog.getBlogId())).withSelfRel(),
 				linkTo(methodOn(BlogController.class).all()).withRel("blogs"));
 	}
 
