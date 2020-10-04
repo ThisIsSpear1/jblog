@@ -18,6 +18,11 @@ public class HTMLTestingController {
 		return "home";
 	}
 	
+	@GetMapping("bloglist")
+	public String blogList() {
+		return "blog/blog-list";
+	}
+	
 	  
 	@GetMapping("blog/list")
 	public String list(@PageableDefault Pageable pageable,
