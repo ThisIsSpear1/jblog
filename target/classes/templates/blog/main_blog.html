@@ -2,48 +2,47 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Board Form</title>
+<title>blog_list</title>
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <link rel="stylesheet" th:href="@{/css/base.css}" />
-<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" 
 </head>
 <body>
 	<div th:replace="layout/header::header"></div>
 
+	<div class = "jumbotron">
+		<div class="container">
+			
+			<h1>Hello, this is my Blog</h1>
+			<p>this is my Blog just simple template. adding jumbotron on bootstrap </p>
+		</div>
+	</div>
+
 	<div class="container">
-		<div class="page-header">
-			<h1>게시글 목록</h1>
+		<div class="row">
+			<div th:each="post:${postList}">
+				<div class = "col-md-4">
+					<h2 th:text="${post.title}"></h2>
+					<p th:text="${post.regDate} ? ${#temporals.format(post.regDate,'yyyy-MM-dd HH:mm')} : ${post.regDate}"></p>
+					<p> click read view details. </p>
+					<p>
+						<a class="btn btn-default" th:href="'/post?postId='+${post.postId}"  role="button">Veiw details</a>
+					</p>
+				</div>
+			</div>
+			
+		
 		</div>
-		<div class="pull-right" style="width: 100px; margin: 10px 0;">
-			<a href="/board" class="btn btn-primary btn-block">등록</a>
-		</div>
-		<br />
-		<br />
-		<br />
-		<div id="mainHide">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th class="col-md-1">#</th>
-						<th class="col-md-2">서비스 분류</th>
-						<th class="col-md-5">제목</th>
-						<th class="col-md-2">작성 날짜</th>
-						<th class="col-md-2">수정 날짜</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="post : ${postList}">
-						<td th:text="${post.postId}"></td>
-						<td><a th:href="'/post?postId='+${post.postId}"
-							th:text="${post.title}"></a></td>
-						<td
-							th:text="${post.regDate} ? ${#temporals.format(post.regDate,'yyyy-MM-dd HH:mm')} : ${post.regDate}"></td>
-						<td
-							th:text="${post.regDate} ? ${#temporals.format(post.regDate,'yyyy-MM-dd HH:mm')} : ${post.regDate}"></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<br />
+	</div>
+
+
+	<div class="row">
+		<div class="container"></div>
 		<!-- Pagination -->
 		<nav aria-label="Page navigation" style="text-align: center;">
 			<ul class="pagination"
@@ -64,8 +63,8 @@
 			</ul>
 		</nav>
 		<!-- /Pagination -->
+		</div>
 	</div>
-
 	<div th:replace="layout/footer::footer"></div>
 </body>
 </html>

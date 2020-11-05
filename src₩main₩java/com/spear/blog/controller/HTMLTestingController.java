@@ -20,7 +20,7 @@ public class HTMLTestingController {
 	
 	@GetMapping("bloglist")
 	public String blogList() {
-		return "blog/blog-list";
+		return "blog/blog_list";
 	}
 	
 	  
